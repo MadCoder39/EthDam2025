@@ -264,7 +264,7 @@ function App() {
       setTotalPool(ethers.utils.formatEther(newTotalPool));
       
       setMessage({ 
-        text: `Successfully placed bet of ${betAmount} ETH on ${choice ? 'True' : 'False'}!`, 
+        text: `Successfully placed bet of ${betAmount} TEST on ${choice ? 'True' : 'False'}!`, 
         type: 'success' 
       });
       
@@ -387,7 +387,7 @@ function App() {
   return (
     <div className="App" style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
       <h1>Prediction Market</h1>
-      
+      <h2>Will P.I.M.P. team win the hackaton?</h2>
       <div style={{ marginBottom: '20px' }}>
         {error && (
           <div style={{ 
@@ -433,7 +433,7 @@ function App() {
             <p>Connected Account: {account}</p>
             <p>Network: {network}</p>
             <p>Contract Address: {CONTRACT_ADDRESS}</p>
-            <p>Total Pool: {totalPool} ETH</p>
+            <p>Total Pool: {totalPool} TEST</p>
             <p>Status: {isResolved ? `Resolved (${outcome ? 'True' : 'False'})` : 'Open'}</p>
           </>
         )}
@@ -444,13 +444,13 @@ function App() {
           <h2>Place a Bet</h2>
           <div style={{ marginBottom: '10px' }}>
             <label>
-              Amount (ETH):
+              Amount (TEST):
               <input
                 type="number"
                 value={betAmount}
                 onChange={(e) => setBetAmount(e.target.value)}
                 style={{ marginLeft: '10px' }}
-                placeholder="Enter amount in ETH"
+                placeholder="Enter amount in TEST"
               />
             </label>
           </div>
