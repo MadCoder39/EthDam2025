@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import PredictionMarket from './contracts/PredictionMarket.json';
 
-// Add type declarations for MetaMask
 declare global {
   interface Window {
     ethereum: {
@@ -16,8 +15,6 @@ declare global {
   }
 }
 
-// const CONTRACT_ADDRESS = '0xdBEf54C238908C84e8cBc6AdB5991fF783A78E64';
-// const CONTRACT_ADDRESS = '0xB6e4F7f2A6e4CF902b2e366F6c57e7e7A0C8ec91';
 const CONTRACT_ADDRESS = '0xA8A2B5F111Fed28B7f7584650Ed069FB7F793eeE';
 
 function App() {
@@ -50,7 +47,6 @@ function App() {
             await connectWallet();
           }
 
-          // Set up event listeners
           window.ethereum.on('accountsChanged', handleAccountsChanged);
           window.ethereum.on('chainChanged', handleChainChanged);
           window.ethereum.on('connect', handleConnect);
@@ -67,7 +63,6 @@ function App() {
 
     init();
 
-    // Cleanup event listeners
     return () => {
       if (window.ethereum) {
         window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
@@ -159,7 +154,6 @@ function App() {
       console.log('Setting up provider and contract...');
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       
-      // Verify contract exists
       const isContractValid = await verifyContract(provider);
       if (!isContractValid) {
         throw new Error('Contract not found at the specified address. Please check the contract address.');
@@ -172,7 +166,6 @@ function App() {
         signer
       );
 
-      // Log the oracle address from the contract
       const oracleAddress = await contract.getOracleAddress();
       console.log('Contract Oracle Address:', oracleAddress);
       console.log('Current Account:', accounts[0]);
@@ -181,7 +174,6 @@ function App() {
       setContract(contract);
       setAccount(accounts[0]);
 
-      // Use the contract's oracle address instead of hardcoded one
       setIsOracle(accounts[0].toLowerCase() === oracleAddress.toLowerCase());
       
       // Set default values
@@ -220,15 +212,11 @@ function App() {
   const getEncryptedChoice = async (choice: boolean): Promise<string> => {
     if (!contract) throw new Error('Contract not connected');
     
-    // For now, we'll use a simple encoding of the choice
-    // This is not secure encryption, but it will work for testing
     const message = ethers.utils.defaultAbiCoder.encode(['bool'], [choice]);
     
-    // Add some random bytes to make it look like encryption
     const randomBytes = ethers.utils.randomBytes(32);
     const concatenated = ethers.utils.concat([randomBytes, message]);
     
-    // Convert the Uint8Array to a hex string
     return ethers.utils.hexlify(concatenated);
   };
 
@@ -250,21 +238,21 @@ function App() {
     try {
       setMessage({ text: 'Placing bet...', type: 'success' });
       
-      // Get the current gas price
       const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const gasPrice = await provider.getGasPrice();
+      // const gasPrice = await provider.getGasPrice();
       
-      // Get properly encrypted choice
-      const encryptedChoice = await getEncryptedChoice(choice);
-      
-      const tx = await contract.placeBet(encryptedChoice, {
-        value: ethers.utils.parseEther(betAmount),
-        gasPrice: gasPrice
-      });
+      // const encryptedChoice = await getEncryptedChoice(choice);
+
+      // const tx = await contract.placeBet(encryptedChoice, {
+      //   value: ethers.utils.parseEther(betAmount),
+      //   gasPrice: gasPrice
+      // });
+
+      const encodedChoice = ethers.utils.defaultAbiCoder.encode(["bool"], [true]);
+      let tx = await contract.placeBet(encodedChoice, { value: ethers.utils.parseEther("2.0") });
       
       setMessage({ text: 'Transaction submitted. Waiting for confirmation...', type: 'success' });
       
-      // Wait for transaction confirmation
       const receipt = await tx.wait();
       
       if (receipt.status === 0) {
@@ -319,14 +307,10 @@ function App() {
     try {
       setMessage({ text: 'Resolving market...', type: 'success' });
       
-      // Get the current gas price
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-
       const tx = await contract.resolve(outcome);
 
       setMessage({ text: 'Transaction submitted. Waiting for confirmation...', type: 'success' });
       
-      // Wait for transaction confirmation
       const receipt = await tx.wait();
       
       if (receipt.status === 0) {
@@ -373,7 +357,6 @@ function App() {
     }
   };
 
-  // Auto-clear messages after 5 seconds
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => {
@@ -387,12 +370,10 @@ function App() {
     if (contract) {
       updateContractState();
       
-      // Listen for BetPlaced events
       contract.on('BetPlaced', async () => {
         await updateContractState();
       });
       
-      // Listen for Resolved events
       contract.on('Resolved', async () => {
         await updateContractState();
       });
