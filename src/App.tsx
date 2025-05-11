@@ -15,7 +15,7 @@ declare global {
   }
 }
 
-const CONTRACT_ADDRESS = '0xC37CBaEb36fbB20f8E9E6B26b2E58eC1Ac3385E2';
+const CONTRACT_ADDRESS = '0x24FaBaFc5E7608F6f5198110CF34708Ff1DaB8E1';
 
 function App() {
   const [account, setAccount] = useState<string>('');
@@ -239,17 +239,14 @@ function App() {
       setMessage({ text: 'Placing bet...', type: 'success' });
       
       const provider = new ethers.providers.Web3Provider(window.ethereum);
-      // const gasPrice = await provider.getGasPrice();
+      const gasPrice = await provider.getGasPrice();
       
-      // const encryptedChoice = await getEncryptedChoice(choice);
+      const encryptedChoice = await getEncryptedChoice(choice);
 
-      // const tx = await contract.placeBet(encryptedChoice, {
-      //   value: ethers.utils.parseEther(betAmount),
-      //   gasPrice: gasPrice
-      // });
-
-      const encodedChoice = ethers.utils.defaultAbiCoder.encode(["bool"], [true]);
-      let tx = await contract.placeBet(encodedChoice, { value: ethers.utils.parseEther("2.0") });
+      const tx = await contract.placeBet(encryptedChoice, {
+        value: ethers.utils.parseEther(betAmount),
+        gasPrice: gasPrice
+      });
       
       setMessage({ text: 'Transaction submitted. Waiting for confirmation...', type: 'success' });
       
