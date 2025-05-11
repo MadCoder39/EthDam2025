@@ -15,7 +15,7 @@ declare global {
   }
 }
 
-const CONTRACT_ADDRESS = '0xA8A2B5F111Fed28B7f7584650Ed069FB7F793eeE';
+const CONTRACT_ADDRESS = '0xC37CBaEb36fbB20f8E9E6B26b2E58eC1Ac3385E2';
 
 function App() {
   const [account, setAccount] = useState<string>('');
